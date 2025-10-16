@@ -39,7 +39,7 @@ configure_loopback() {
     fi
     
     # Check if the IP is already configured
-    if ip addr show lo | grep -q "$ip"; then
+    if ip addr show lo | grep -F "$ip_with_cidr" >/dev/null; then
         echo "The IP $ip is already configured on the loopback interface."
     else
         # Add the IP to the loopback interface
@@ -107,8 +107,8 @@ Wants=network-online.target
 
 [Service]
 Type=oneshot
-ExecStart=/bin/bash -c "if ! ip addr show lo | grep -q '"$ip"'; then /sbin/ip addr add '"$ip_with_cidr"' dev lo; fi"
-ExecStop=/bin/bash -c "if ip addr show lo | grep -q '"$ip"'; then /sbin/ip addr del '"$ip_with_cidr"' dev lo; fi"
+ExecStart=/bin/bash -c "if ! ip addr show lo | grep -F '"$ip_with_cidr"'; then /sbin/ip addr add '"$ip_with_cidr"' dev lo; fi"
+ExecStop=/bin/bash -c "if ip addr show lo | grep -F '"$ip_with_cidr"'; then /sbin/ip addr del '"$ip_with_cidr"' dev lo; fi"
 RemainAfterExit=yes
 
 [Install]
@@ -127,7 +127,7 @@ EOF'
     if ! sudo systemctl start add-vip.service; then
         echo "Warning: Failed to start add-vip.service, but the IP may already be configured."
         # Check if the IP is actually configured on the loopback interface
-        if ip addr show lo | grep -q "$ip"; then
+        if ip addr show lo | grep -F "$ip_with_cidr" >/dev/null; then
             echo "IP $ip is already configured on the loopback interface. Service creation completed."
         else
             echo "Failed to start add-vip.service and IP is not configured."
