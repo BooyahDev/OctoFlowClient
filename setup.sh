@@ -108,6 +108,7 @@ Wants=network-online.target
 [Service]
 Type=oneshot
 ExecStart=/bin/bash -c "if ! ip addr show lo | grep -q '"$ip"'; then /sbin/ip addr add '"$ip_with_cidr"' dev lo; fi"
+ExecStop=/bin/bash -c "if ip addr show lo | grep -q '"$ip"'; then /sbin/ip addr del '"$ip_with_cidr"' dev lo; fi"
 RemainAfterExit=yes
 
 [Install]

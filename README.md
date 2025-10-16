@@ -24,6 +24,7 @@
 - サービス名: `add-vip.service`
 - 自動起動設定
 - 既存IP確認機能付き
+- **自動削除機能**: サービス停止時にIPアドレスを自動削除
 
 ## 使用方法
 
@@ -137,16 +138,35 @@ journalctl -xeu add-vip.service
 
 ## 設定削除
 
-IPアドレスを削除する場合：
-```bash
-# IPアドレス削除
-sudo ip addr del 10.0.200.102/32 dev lo
+### 簡単な削除方法（推奨）
 
-# systemdサービス停止・削除
+systemdサービスを停止するだけで、loopbackインターフェースからIPアドレスが自動的に削除されます：
+
+```bash
+# VIPアドレスを削除（サービス停止で自動実行）
+sudo systemctl stop add-vip.service
+
+# サービスの自動起動を無効化
+sudo systemctl disable add-vip.service
+```
+
+### 完全削除
+
+systemdサービスファイルも完全に削除する場合：
+
+```bash
+# サービス停止・無効化・削除
 sudo systemctl stop add-vip.service
 sudo systemctl disable add-vip.service
 sudo rm /etc/systemd/system/add-vip.service
 sudo systemctl daemon-reload
+```
+
+### 手動でのIP削除
+
+必要に応じて手動でIPアドレスを削除：
+```bash
+sudo ip addr del 10.0.200.102/32 dev lo
 ```
 
 ## 対応OS
