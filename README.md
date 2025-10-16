@@ -30,7 +30,7 @@
 ### 1. ワンライナー実行（推奨）
 
 ```bash
-sudo /bin/bash -c "$(curl -fsSL https://setup.sh)" -- 10.0.200.102
+sudo /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/BooyahDev/OctoFlowClient/refs/heads/master/setup.sh)" -- 10.0.200.102
 ```
 
 ### 2. 対話式実行
